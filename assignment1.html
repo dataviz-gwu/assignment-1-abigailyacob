@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Your Name">
+<meta name="author" content="Abigail Yacob">
 
 <title>Assignment 1</title>
 <style>
@@ -90,7 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Your Name </p>
+             <p>Abigail Yacob </p>
           </div>
   </div>
     
@@ -108,9 +108,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><em>Try to pick variables that will relate to women’s representation and read the description of the variable to make sure that it includes data for a sufficient number of years, e.g.&nbsp;that the data will be somewhat recent. Select the most recent 20 years of data for your analysis.</em></p>
 <p><em>Make sure to load the packages that you need and <code>glimpse()</code> the data or <code>View()</code> it to make sure that it downloaded properly.</em></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">+</span><span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vdemdata)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>democracy <span class="ot">&lt;-</span> vdem <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">2003</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    year,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">country =</span> country_name,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">vdem_ctry_id =</span> country_id,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">female_suffrage =</span> v2fsuffrage, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender_equality=</span> v2clgencl, </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gdp_pc =</span> e_gdppc, </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">region =</span> e_regionpol_6C</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">|&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">region =</span> <span class="fu">case_match</span>(region,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Eastern Europe"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Latin America"</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">3</span> <span class="sc">~</span> <span class="st">"Middle East"</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Africa"</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">5</span> <span class="sc">~</span> <span class="st">"The West"</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                        <span class="dv">6</span> <span class="sc">~</span> <span class="st">"Asia"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(democracy)    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code>Rows: 3,568
+Columns: 7
+$ year            &lt;dbl&gt; 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, …
+$ country         &lt;chr&gt; "Mexico", "Mexico", "Mexico", "Mexico", "Mexico", "Mex…
+$ vdem_ctry_id    &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
+$ female_suffrage &lt;dbl&gt; 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,…
+$ gender_equality &lt;dbl&gt; 0.954, 0.954, 0.954, 1.158, 1.158, 1.158, 1.158, 1.158…
+$ gdp_pc          &lt;dbl&gt; 13.713, 14.061, 14.332, 14.584, 14.729, 14.771, 14.425…
+$ region          &lt;chr&gt; "Latin America", "Latin America", "Latin America", "La…</code></pre>
 </div>
 </div>
 </section>
@@ -118,18 +162,139 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="step-2-download-data-from-the-world-bank">Step 2: Download data from the World Bank</h2>
 <p><em>Next, download the variable on women’s represenation that we used in Module 1.2 (“SG.GEN.PARL.ZS”) and at least one additional measure related to women’s empowerment. Go to the <a href="https://databank.worldbank.org/source/world-development-indicators">WDI</a> site the wb_search() function to identify relevant variables. Download the most recent 20 years of data for your analysis.</em></p>
 <p><em>Make sure that the indicator has enough data to conduct your analysis, i.e.&nbsp;that it has data for most countries and years.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wbstats)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'janitor'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    chisq.test, fisher.test</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#list of indicators in an object being stored</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>indicators <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"women_rep"</span> <span class="ot">=</span> <span class="st">"SG.GEN.PARL.ZS"</span>, <span class="st">"women_decisons"</span><span class="ot">=</span> <span class="st">"SG.DMK.SRCR.FN.ZS"</span>) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#data being downloaded </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>women_emp <span class="ot">&lt;-</span> <span class="fu">wb_data</span>(indicators, <span class="at">mrv =</span> <span class="dv">20</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span>iso2c) <span class="sc">|&gt;</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">year =</span> date) <span class="sc">|&gt;</span>  </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_rep =</span> <span class="fu">round_to_fraction</span>(women_rep, <span class="at">denominator =</span> <span class="dv">100</span>), </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_decisons =</span> <span class="fu">round_to_fraction</span>(women_decisons, <span class="at">denominator =</span> <span class="dv">100</span>) </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(women_emp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 4,340
+Columns: 5
+$ iso3c          &lt;chr&gt; "ABW", "ABW", "ABW", "ABW", "ABW", "ABW", "ABW", "ABW",…
+$ country        &lt;chr&gt; "Aruba", "Aruba", "Aruba", "Aruba", "Aruba", "Aruba", "…
+$ year           &lt;dbl&gt; 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2…
+$ women_decisons &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ women_rep      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+</div>
+</div>
 </section>
 <section id="step-3-merge-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="step-3-merge-the-data">Step 3: Merge the data</h2>
 <p><em>Now add country codes using the <code>countrycode</code> package and merge the data using <code>left_join()</code>.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(countrycode)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>democracy <span class="ot">&lt;-</span> democracy <span class="sc">|&gt;</span>    </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">iso3c =</span> <span class="fu">countrycode</span>(<span class="at">sourcevar =</span> vdem_ctry_id, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">origin =</span> <span class="st">"vdem"</span>,         </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">destination =</span> <span class="st">"wb"</span>))  <span class="sc">|&gt;</span> </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(iso3c, <span class="at">.after =</span> vdem_ctry_id) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `iso3c = countrycode(sourcevar = vdem_ctry_id, origin = "vdem",
+  destination = "wb")`.
+Caused by warning:
+! Some values were not matched unambiguously: 128, 139, 236</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dem_women <span class="ot">&lt;-</span> <span class="fu">left_join</span>(democracy, women_emp, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"iso3c"</span>, <span class="st">"year"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">country =</span> country.x)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dem_women)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 3,568
+Columns: 11
+$ year            &lt;dbl&gt; 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, …
+$ country         &lt;chr&gt; "Mexico", "Mexico", "Mexico", "Mexico", "Mexico", "Mex…
+$ vdem_ctry_id    &lt;dbl&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …
+$ iso3c           &lt;chr&gt; "MEX", "MEX", "MEX", "MEX", "MEX", "MEX", "MEX", "MEX"…
+$ female_suffrage &lt;dbl&gt; 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,…
+$ gender_equality &lt;dbl&gt; 0.954, 0.954, 0.954, 1.158, 1.158, 1.158, 1.158, 1.158…
+$ gdp_pc          &lt;dbl&gt; 13.713, 14.061, 14.332, 14.584, 14.729, 14.771, 14.425…
+$ region          &lt;chr&gt; "Latin America", "Latin America", "Latin America", "La…
+$ country.y       &lt;chr&gt; "Mexico", "Mexico", "Mexico", "Mexico", "Mexico", "Mex…
+$ women_decisons  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ women_rep       &lt;dbl&gt; 22.60, 22.60, 24.20, 22.60, 23.20, 23.20, 27.60, 26.20…</code></pre>
+</div>
+</div>
 </section>
 <section id="step-4-summarize-your-combined-data-set" class="level2">
 <h2 class="anchored" data-anchor-id="step-4-summarize-your-combined-data-set">Step 4: Summarize your combined data set</h2>
 <p><em>Use <code>group_by()</code>, <code>summarize()</code> and <code>arrange()</code> to glean insights about your data. For example, how do regions compare on mean values of women’s representation and how do these values relate to the values of other variables in your data set? Which countries stand out in terms of women’s representation? Etc.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#region summary</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>dem_summary_region <span class="ot">&lt;-</span> dem_women <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_rep =</span> <span class="fu">mean</span>(women_rep, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_decisons =</span> <span class="fu">mean</span>(women_decisons, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">female_suffrage =</span> <span class="fu">mean</span>(female_suffrage, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender_equality =</span> <span class="fu">mean</span>(gender_equality, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gdp_pc =</span> <span class="fu">mean</span>(gdp_pc, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(women_rep))</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dem_summary_region)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 6
+Columns: 6
+$ region          &lt;chr&gt; "The West", "Latin America", "Eastern Europe", "Africa…
+$ women_rep       &lt;dbl&gt; 29.83010, 23.55159, 19.74641, 19.25627, 15.66137, 11.5…
+$ women_decisons  &lt;dbl&gt; NaN, 68.67778, 68.17143, 41.40758, 60.46364, 66.65000
+$ female_suffrage &lt;dbl&gt; 100.00000, 99.60000, 99.68361, 91.99309, 94.64286, 72.…
+$ gender_equality &lt;dbl&gt; 2.8006979, 1.6071080, 1.9683083, 0.8978990, 1.0610859,…
+$ gdp_pc          &lt;dbl&gt; 42.279618, 11.103501, 14.852812, 5.135589, 11.644871, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#country summary</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dem_summary_country<span class="ot">&lt;-</span> dem_women <span class="sc">|&gt;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country) <span class="sc">|&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_rep =</span> <span class="fu">mean</span>(women_rep, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">women_decisons =</span> <span class="fu">mean</span>(women_decisons, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">female_suffrage =</span> <span class="fu">mean</span>(female_suffrage, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender_equality =</span> <span class="fu">mean</span>(gender_equality, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">gdp_pc =</span> <span class="fu">mean</span>(gdp_pc, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(women_rep))</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dem_summary_country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 179
+Columns: 6
+$ country         &lt;chr&gt; "Rwanda", "Sweden", "Cuba", "Finland", "South Africa",…
+$ women_rep       &lt;dbl&gt; 57.37500, 45.60150, 45.52500, 41.75000, 40.30600, 39.7…
+$ women_decisons  &lt;dbl&gt; 64.20, NaN, NaN, NaN, 64.90, NaN, NaN, NaN, NaN, 49.10…
+$ female_suffrage &lt;dbl&gt; 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,…
+$ gender_equality &lt;dbl&gt; 2.12655, 2.62700, 2.10605, 2.65580, 1.02950, 2.66300, …
+$ gdp_pc          &lt;dbl&gt; 1.705706, 44.122706, 7.327412, 38.301824, 11.053353, 5…</code></pre>
+</div>
+</div>
 </section>
 <section id="step-5-interpret-your-data" class="level2">
 <h2 class="anchored" data-anchor-id="step-5-interpret-your-data">Step 5: Interpret your data</h2>
 <p><em>Write a paragraph or so relating your insights to the Norris reading about electoral reform and women’s representation. Picking a handful of country cases from your data, how does your analysis relate to her arguments about the relevance of electoral systems, statutory quotas, reserved seats or voluntary quotas?</em></p>
+<p>Norris’s reading emphasizes the importance of electoral systems in shaping women’s participation in government. She claims that proportional representation (PR) systems are more beneficial to women’s representation compared to majoritarian systems. This is because PR systems allow women to obtain seats even without winning a complete majority while majoritarian systems tend to prefer male candidates that have greater recognition. Analyzing my V-Dem data, my findings validate Norris’s claims. The summarized region data set shows a correlation between high women_rep, high female_suffrage, and high gender_equality. For instance, when comparing The West and Latin America we can visualize the relationship between the variables and see how they correlate. This shows that female suffrage and women’s representation is beneficial for gender equality. Therefore, as seen in the data and Norris’s reading the evidence suggests that electoral reform and statutory quotas can address this challenge and help achieve gender equality.</p>
 </section>
 
 </main>
