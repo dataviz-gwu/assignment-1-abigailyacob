@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1"
-author: "Your Name"
+author: "Abigail Yacob"
 format: html
 ---
 
@@ -15,7 +15,30 @@ format: html
 *Make sure to load the packages that you need and `glimpse()` the data or `View()` it to make sure that it downloaded properly.* 
 
 ```{r}
+library(vdemdata)
+library(dplyr)
 
+democracy <- vdem |>
+filter(year >= 2003) |>
+  select(
+    year,
+    country = country_name,
+    vdem_ctry_id = country_id,
+    female_suffrage = v2fsuffrage, 
+    gender_equality= v2clgencl, 
+    gdp_pc = e_gdppc, 
+    region = e_regionpol_6C
+  )|>
+  mutate(
+    region = case_match(region,
+                        1 ~ "Eastern Europe",
+                        2 ~ "Latin America",
+                        3 ~ "Middle East",
+                        4 ~ "Africa",
+                        5 ~ "The West",
+                        6 ~ "Asia")
+    )
+glimpse(democracy)    
 ```
 
 ## Step 2: Download data from the World Bank
@@ -25,7 +48,23 @@ format: html
 *Make sure that the indicator has enough data to conduct your analysis, i.e. that it has data for most countries and years.*
 
 ```{r}
+library(wbstats)
+library(dplyr)
+library(janitor)
 
+#list of indicators in an object being stored
+indicators <- c("women_rep" = "SG.GEN.PARL.ZS", "women_decisons"= "SG.DMK.SRCR.FN.ZS") 
+
+#data being downloaded 
+women_emp <- wb_data(indicators, mrv = 20) |> 
+  select(!iso2c) |> 
+  rename(year = date) |>  
+  mutate(
+    women_rep = round_to_fraction(women_rep, denominator = 100), 
+    women_decisons = round_to_fraction(women_decisons, denominator = 100) 
+  )
+
+glimpse(women_emp)
 ```
 
 ## Step 3: Merge the data
@@ -33,15 +72,58 @@ format: html
 *Now add country codes using the `countrycode` package and merge the data using `left_join()`.* 
 
 ```{r}
+library(countrycode)
+library(readr)
 
+democracy <- democracy |>    
+  mutate(iso3c = countrycode(sourcevar = vdem_ctry_id, 
+        origin = "vdem",         
+        destination = "wb"))  |> 
+  relocate(iso3c, .after = vdem_ctry_id) 
+
+dem_women <- left_join(democracy, women_emp, by = c("iso3c", "year")) |>
+  rename(country = country.x)
+  
+glimpse(dem_women)
 ```
 
 ## Step 4: Summarize your combined data set
 
 *Use `group_by()`, `summarize()` and `arrange()` to glean insights about your data. For example, how do regions compare on mean values of women's representation and how do these values relate to the values of other variables in your data set? Which countries stand out in terms of women's representation? Etc.* 
 
+```{r}
+#region summary
+dem_summary_region <- dem_women |>
+  group_by(region) |>
+  summarize(
+    women_rep = mean(women_rep, na.rm = TRUE),
+    women_decisons = mean(women_decisons, na.rm = TRUE),
+    female_suffrage = mean(female_suffrage, na.rm = TRUE),
+    gender_equality = mean(gender_equality, na.rm = TRUE),
+    gdp_pc = mean(gdp_pc, na.rm = TRUE)
+  ) |>
+  arrange(desc(women_rep))
+
+glimpse(dem_summary_region)
+
+#country summary
+dem_summary_country<- dem_women |>
+  group_by(country) |>
+  summarize(
+    women_rep = mean(women_rep, na.rm = TRUE),
+    women_decisons = mean(women_decisons, na.rm = TRUE),
+    female_suffrage = mean(female_suffrage, na.rm = TRUE),
+    gender_equality = mean(gender_equality, na.rm = TRUE),
+    gdp_pc = mean(gdp_pc, na.rm = TRUE)
+  ) |>
+  arrange(desc(women_rep))
+
+glimpse(dem_summary_country)
+```
 
 ## Step 5: Interpret your data
 
 *Write a paragraph or so relating your insights to the Norris reading about electoral reform and women's representation. Picking a handful of country cases from your data, how does your analysis relate to her arguments about the relevance of electoral systems, statutory quotas, reserved seats or voluntary quotas?* 
+
+Norris's reading emphasizes the importance of electoral systems in shaping women's participation in government. She claims that proportional representation (PR) systems are more beneficial to women's representation compared to majoritarian systems. This is because PR systems allow women to obtain seats even without winning a complete majority while majoritarian systems tend to prefer male candidates that have greater recognition. Analyzing my V-Dem data, my findings validate Norris's claims. The summarized region data set shows a correlation between high women_rep, high female_suffrage, and high gender_equality. For instance, when comparing The West and Latin America we can visualize the relationship between the variables and see how they correlate. This shows that female suffrage and women’s representation is beneficial for gender equality. Therefore, as seen in the data and Norris’s reading the evidence suggests that electoral reform and statutory quotas can address this challenge and help achieve gender equality. 
 
